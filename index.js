@@ -34,58 +34,87 @@ async function run() {
     const toyCollection = client.db("toyDb").collection("products");
 
     app.get('/products', async (req, res) => {
-      const result = await toyCollection.find().toArray()
-      res.send(result)
+      try {
+        const result = await toyCollection.find().toArray()
+        res.send(result)
+      } catch (error) {
+        res.send(error)
+      }
+
     })
 
     app.get('/product', async (req, res) => {
 
-      let query = {}
-      if (req.query?.sellerEmail) {
-        query = { sellerEmail: req.query?.sellerEmail }
+      try {
+        let query = {}
+        if (req.query?.sellerEmail) {
+          query = { sellerEmail: req.query?.sellerEmail }
+        }
+        const result = await toyCollection.find(query).toArray()
+        res.send(result)
+      } catch (error) {
+        res.send(error)
       }
-      const result = await toyCollection.find(query).toArray()
-      res.send(result)
     })
-    app.get('/update/:id',async(req,res)=>{
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) }
-      const result = await toyCollection.findOne(query)
-      res.send(result)
+    app.get('/update/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await toyCollection.findOne(query)
+        res.send(result)
+      } catch (error) {
+        res.send(error)
+      }
     })
 
     app.get('/products/:text', async (req, res) => {
-      const result = await toyCollection.find({ sub_category: req.params.text }).toArray()
-      res.send(result)
+      try {
+        const result = await toyCollection.find({ sub_category: req.params.text }).toArray()
+        res.send(result)
+      } catch (error) {
+        res.send(error)
+      }
     })
 
     app.post('/products', async (req, res) => {
-      const newToy = req.body;
-      const result = await toyCollection.insertOne(newToy)
-      res.send(result)
+      try {
+        const newToy = req.body;
+        const result = await toyCollection.insertOne(newToy)
+        res.send(result)
+      } catch (error) {
+        res.send(error)
+      }
     })
 
-    app.put('/update/:id', async(req,res)=>{
-      const id = req.params.id;
-      const filter = {_id : new ObjectId(id)}
-      const options = { upsert: true };
-      const updateToy = req.body;
-      const toy = {
-        $set: {
-           price :updateToy.price,    
-           quantity:updateToy.quantity,
-          description:updateToy.description
-        },
-      };
-      const result = await toyCollection.updateOne(filter, toy, options);
-      res.send(result)
+    app.put('/update/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) }
+        const options = { upsert: true };
+        const updateToy = req.body;
+        const toy = {
+          $set: {
+            price: updateToy.price,
+            quantity: updateToy.quantity,
+            description: updateToy.description
+          },
+        };
+        const result = await toyCollection.updateOne(filter, toy, options);
+        res.send(result)
+      } catch (error) {
+        res.send(error)
+      }
     })
 
     app.delete('/products/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) }
-      const result = await toyCollection.deleteOne(query)
-      res.send(result)
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await toyCollection.deleteOne(query)
+        res.send(result)
+      } catch (error) {
+        res.send(error)
+      }
     })
 
     // Send a ping to confirm a successful connection
